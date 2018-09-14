@@ -46,11 +46,11 @@ USPostalCode                // USA postal code 5 digit or 5-4
 SSN                         // Social Security Number
 USD                         // USA Currency
 LatLong                     // Latitude, Longitude Geocoordinates
-DateCCYYMMDD                // Date in Century Month Daty (optionally with '-', '.', or '/'
+DateCCYYMMDD                // Date in Century Month Day (optionally with '-', '.', or '/'
 PANAmex                     // Payment|Primary Card Number aka credit card number American Express
 PANVisa                     // Payment|Primary Card Number aka credit card number Visa
 PANMC                       // Payment|Primary Card Number aka credit card number Mastercard
 PANDiscover                 // Payment|Primary Card Number aka credit card number Discover
-PANDiners                   // Payment|Primary Card Number aka credit card number Diner's Club
+PANDiners                   // Payment|Primary Card Number aka credit card number Diners Club
 PANJCB                      // Payment|Primary Card Number aka credit card number JCB
 ```

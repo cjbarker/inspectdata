@@ -32,7 +32,7 @@ const (
 	SSN                         // Social Security Number
 	USD                         // USA Currency
 	LatLong                     // Latitude, Longitude Geocoordinates
-	DateCCYYMMDD                // Date in Century Month Daty (optionally with '-', '.', or '/'
+	DateCCYYMMDD                // Date in Century Month Day (optionally with '-', '.', or '/'
 	PANAmex                     // Payment|Primary Card Number aka credit card number American Express
 	PANVisa                     // Payment|Primary Card Number aka credit card number Visa
 	PANMC                       // Payment|Primary Card Number aka credit card number Mastercard
