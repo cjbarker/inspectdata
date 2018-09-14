@@ -1,3 +1,4 @@
+// Package provides conceptual (canonical) identification of unknown data including Personally Identifiable Information (PII) and Payment Card Industry (PCI).
 package inspectdata
 
 import (
@@ -7,10 +8,10 @@ import (
 	"strings"
 )
 
-// Variables to identify the build
+// Identify the version of the release
 var (
-	Version string
-	Build   string
+	Version string // Release: Major.Minor.HotFix, ex: 1.0.1
+	Build   string // Build release identification, date timestamp
 )
 
 // Denotes the canonical type for a given piece of string data ex: IP address, email, or UUID
@@ -40,13 +41,12 @@ const (
 	PANJCB                      // Payment|Primary Card Number aka credit card number JCB
 )
 
-// Canonical structure representing a given piece of data aka datum.
-// Handles inspecting numerous forms of data and applying conceptual/canonical determination.
+// Canonical structure representing a given piece of data aka the datum.
 // Example data includes, but is not limited to: IP address, UUID, SSN, Lat/Long, Credit Cards and more.
 type Datum struct {
 	Data      interface{}   // Actual atomic data value
 	DataType  string        // Represents data type ex: string, int, bool, float32, etc.
-	Canonical CanonicalType // Canonical inspected data type ex: UUIDv4, IPv4, SSN, etc.
+	Canonical CanonicalType // Canonical inspected data type identified from inspectio ex: UUIDv4, IPv4, SSN, etc.
 	IsPII     bool          // Denotes if considered Personally Identifiable Information (ex: email addr)
 	IsPCI     bool          // Denotes if considered Payment Card Industry data (ex: credit card no.)
 }
@@ -72,8 +72,31 @@ const rePANDiscover = "^65[4-9][0-9]{13}|64[4-9][0-9]{13}|6011[0-9]{12}|(622(?:1
 const reIPv4 = `^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$`
 const reIPv6 = `^(([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:)|fe80:(:[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]{1,}|::(ffff(:0{1,4}){0,1}:){0,1}((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])|([0-9a-fA-F]{1,4}:){1,4}:((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9]))$`
 
-// Inspects data determining its canonically representation and associated meta-data
+// Inspects data determining its canonical representation and associated meta-data
+// Handles inspecting numerous forms of data and applying conceptual/canonical determination.
+// It returns the Datum struct identified from the inspected data and any error encountered.
 // When error is nil it will always contain non-nil Datum
+//
+//  returns ("", error) if error such that type of input data is unknown (unable to process)
+//  returns (datum, nil) if input successfully inspected
+//
+// Example Usage
+//  // PCI via PAN primary account number for credit card
+//  input := "4444444444444448"
+//  datum, err = Inspect(input)
+//  if err != nil {
+//    // handle error
+//  }
+//
+//  fmt.Printf("%+v\n", datum)
+//  {Data:4444444444444448 DataType:string Canonical:PANVisa IsPII:false IsPCI:true}
+//
+//
+//  // Peronsonally Identifiable Information (PII) via Social Security Number
+//  input = "867-53-0999"
+//  datum, _ = Inspect(input)
+//  fmt.Printf("%+v\n", datum)
+//  {Data:867-53-0999 DataType:string Canonical:SSN IsPII:true IsPCI:false}
 func Inspect(v interface{}) (datum Datum, err error) {
 	datum = Datum{
 		Data: v,

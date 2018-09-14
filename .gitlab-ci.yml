@@ -4,7 +4,7 @@ stages:
   - deploy
 
 variables:
-  APP_REPO: "gitlab.com/cjbarker/go-inspect-data"
+  APP_REPO: "gitlab.com/cjbarker/inspectdata"
   GOPATH: "/go"
 
 cache:

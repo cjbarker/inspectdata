@@ -12,7 +12,7 @@ ROOT_DIR:=$(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
 
 VERSION=$(shell cat version.txt)
 BIN_DIR=bin
-BINARY=go-inspect-data
+BINARY=inspectdata
 COVERAGE_DIR=coverage
 COV_PROFILE=${COVERAGE_DIR}/test-coverage.txt
 COV_HTML=${COVERAGE_DIR}/test-coverage.html
@@ -59,12 +59,16 @@ lint:
 format:
 	go fmt ${PKG}
 
-build: glide format vet
+build: glide stringer format vet
 	go build -o ${BIN_DIR}/${LIB} ${LDFLAGS} ${PKG}
 
-build_all: glide format vet
+build_all: glide stringer format vet
 	$(foreach GOOS, $(PLATFORMS),\
 	$(foreach GOARCH, $(ARCHITECTURES), $(shell export GOOS=$(GOOS); export GOARCH=$(GOARCH); go build -v -o $(BIN_DIR)/$(LIB)-$(GOOS)-$(GOARCH) $(LDFLAGS) $(PKG))))
+
+stringer:
+	go get golang.org/x/tools/cmd/stringer
+	stringer -type=CanonicalType
 
 #test: build cyclo
 test: build 
@@ -91,7 +95,7 @@ misspell:
 
 docs: 
 	go get golang.org/x/tools/cmd/godoc
-	open http://localhost:6060/pkg/${PKG}
+	open http://localhost:6060/pkg/${PKG}/
 	godoc -http=":6060"
 	
 install:

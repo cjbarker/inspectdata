@@ -441,6 +441,8 @@ func TestInspect(t *testing.T) {
 		t.Errorf("VISA credit card number data should not be denoted as PII")
 	}
 
+	//fmt.Printf("%+v\n", datum)
+
 	// test PII
 	input = "bob@mail.com"
 	datum, err = Inspect(input)
