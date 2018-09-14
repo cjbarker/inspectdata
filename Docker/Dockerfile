@@ -1,12 +1,12 @@
-# Go-Inspect-Data development environment within a Docker Container
+# inspectdata development environment within a Docker Container
 
 FROM golang:1.10.0-alpine
 
 LABEL version="1.0.0" \
   maintainer="CJ Barker" \
   maintainer.email="cjbarker@gmail.com" \
-  description="Builds Generic Docker image for Go-Inspect-Data (GoLang) Development" \
-  repository="https://gitlab.com/cjbarker/go-inspect-data"
+  description="Builds Generic Docker image for inspectdata (GoLang) Development" \
+  repository="https://gitlab.com/cjbarker/inspectdata"
 
 # Install packages
 RUN apk update
@@ -22,4 +22,4 @@ RUN go get -u -v github.com/alecthomas/gometalinter
 # Install Glide for Go Dependency Mgmt
 RUN curl https://glide.sh/get | sh
 
-WORKDIR /go/src/gitlab.com/cjbarker/go-inspect-data
+WORKDIR /go/src/gitlab.com/cjbarker/inspectdata
