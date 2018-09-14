@@ -29,3 +29,28 @@ if err != nil {
 fmt.Printf("%+v\n", datum)
 {Data:4444444444444448 DataType:string Canonical:PANVisa IsPII:false IsPCI:true}
 ```
+
+# Supported Data Inspected
+Various analysis via assertion, type checking, and regular expressions applies to inspect and determine any of the following data:
+
+```bash
+UIDv4                       // Universally Unique Identifier version 4
+IPv4                        // IP Address version 4
+IPv6                        // IP address version 6
+Email                       // Email address
+CountryCode2                // Country Code ISO ALPHA-2 Code
+CountryCode3                // Country Code ISO ALPHA-3 Code
+LanguageCode2               // Language Code ISO 639-1
+LanguageCode3               // Lanuage Code ISO 639-2/T
+USPostalCode                // USA postal code 5 digit or 5-4
+SSN                         // Social Security Number
+USD                         // USA Currency
+LatLong                     // Latitude, Longitude Geocoordinates
+DateCCYYMMDD                // Date in Century Month Daty (optionally with '-', '.', or '/'
+PANAmex                     // Payment|Primary Card Number aka credit card number American Express
+PANVisa                     // Payment|Primary Card Number aka credit card number Visa
+PANMC                       // Payment|Primary Card Number aka credit card number Mastercard
+PANDiscover                 // Payment|Primary Card Number aka credit card number Discover
+PANDiners                   // Payment|Primary Card Number aka credit card number Diner's Club
+PANJCB                      // Payment|Primary Card Number aka credit card number JCB
+```
