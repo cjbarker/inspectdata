@@ -34,7 +34,7 @@ fmt.Printf("%+v\n", datum)
 Various analysis via assertion, type checking, and regular expressions applies to inspect and determine any of the following data:
 
 ```bash
-UIDv4                       // Universally Unique Identifier version 4
+UUIDv4                       // Universally Unique Identifier version 4
 IPv4                        // IP Address version 4
 IPv6                        // IP address version 6
 Email                       // Email address
