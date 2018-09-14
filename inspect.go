@@ -32,7 +32,7 @@ const (
 	USD                         // USA Currency
 	LatLong                     // Latitude, Longitude Geocoordinates
 	DateCCYYMMDD                // Date in Century Month Daty (optionally with '-', '.', or '/'
-	PANAmex                     // Payment|Primary Card Number aka credit card number Amercian Express
+	PANAmex                     // Payment|Primary Card Number aka credit card number American Express
 	PANVisa                     // Payment|Primary Card Number aka credit card number Visa
 	PANMC                       // Payment|Primary Card Number aka credit card number Mastercard
 	PANDiscover                 // Payment|Primary Card Number aka credit card number Discover
@@ -41,7 +41,7 @@ const (
 )
 
 // Canonical structure representing a given piece of data aka datum.
-// Handles inspecting numerous forms of data and applying conceptual/canoncial determination.
+// Handles inspecting numerous forms of data and applying conceptual/canonical determination.
 // Example data includes, but is not limited to: IP address, UUID, SSN, Lat/Long, Credit Cards and more.
 type Datum struct {
 	Data      interface{}   // Actual atomic data value
@@ -204,6 +204,6 @@ func inspectString(v string) (CanonicalType, error) {
 	} else if validPANDiscover.MatchString(v) {
 		return PANDiscover, nil
 	} else {
-		return Unknown, errors.New("Unable to determine cannonical data - unknown")
+		return Unknown, errors.New("Unable to determine canonical data - unknown")
 	}
 }

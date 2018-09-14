@@ -85,6 +85,10 @@ else
 	printf ${cyclo_results}
 endif 
 
+misspell: 
+	go get github.com/client9/misspell/cmd/misspell
+	misspell .
+
 docs: 
 	go get golang.org/x/tools/cmd/godoc
 	open http://localhost:6060/pkg/${PKG}

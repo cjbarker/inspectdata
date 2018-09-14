@@ -17,7 +17,7 @@ func TestTypeOf(t *testing.T) {
 	testStr := "My string"
 	v, _ := typeof(testStr)
 	if v != "string" {
-		t.Errorf("TypeOf shoudl have detected string, but got: %s", v)
+		t.Errorf("TypeOf should have detected string, but got: %s", v)
 	}
 
 	testBool := false
