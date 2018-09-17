@@ -11,7 +11,9 @@ K := $(foreach exec,$(EXECUTABLES),\
 ROOT_DIR:=$(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
 
 VERSION=$(shell head -n 1 version.txt)
-BUILD=`git rev-parse HEAD | cut -c 1-8`
+# TODO fix later not working on GitLab CI image (showing up blank
+#BUILD=`git rev-parse HEAD | cut -c 1-8`
+BUILD= `date +%FT%T%z`
 VERSIONFILE=version.go
 BIN_DIR=bin
 BINARY=inspectdata
@@ -41,12 +43,12 @@ glide:
 	glide install
 
 version:
-	rm -rf ${VERSION_FILE}
+	rm -rf ${VERSIONFILE}
 	@echo "package inspectdata" > $(VERSIONFILE)
 	@echo "// Identify the version of the release" >> $(VERSIONFILE)
 	@echo "const (" >> $(VERSIONFILE)
 	@echo "  Version = \"${VERSION}\" // Release: Major.Minor.Hotfix, ex: 1.0.1" >> $(VERSIONFILE)
-	@echo "  Build = \"${BUILD}\" // Build release dientification, ex: Git Commit Hash SHA1" >> $(VERSIONFILE)
+	@echo "  Build = \"${BUILD}\" // Build release identification, ex: Git Commit Hash SHA1" >> $(VERSIONFILE)
 	@echo ")" >> $(VERSIONFILE)
 
 vet:
