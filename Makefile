@@ -4,13 +4,15 @@
 # ########################################################## #
 
 # Check for required command tools to build or stop immediately
-EXECUTABLES = git go find pwd uname date
+EXECUTABLES = git go find pwd uname date sed
 K := $(foreach exec,$(EXECUTABLES),\
         $(if $(shell which $(exec)),some string,$(error "No $(exec) in PATH)))
 
 ROOT_DIR:=$(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
 
-VERSION=$(shell cat version.txt)
+VERSION=$(shell head -n 1 version.txt)
+BUILD=`git rev-parse HEAD | cut -c 1-8`
+VERSIONFILE=version.go
 BIN_DIR=bin
 BINARY=inspectdata
 COVERAGE_DIR=coverage
@@ -20,15 +22,8 @@ LIB=lib${BINARY}
 PKG=gitlab.com/cjbarker/${BINARY}
 PLATFORMS=darwin linux windows
 ARCHITECTURES=386 amd64
-BUILD=`date +%FT%T%z`
 UNAME=$(shell uname)
 GOLIST=$(shell go list ./...)
-
-# Binary Build 
-LDFLAGS=-ldflags "-X ${PKG}.Version=${VERSION} -X ${PKG}.Build=${BUILD}"
-# Test Build
-LDFLAGS_TEST=-ldflags "-X ${PKG}.Version=${VERSION} -X ${PKG}.Build=${BUILD}"
-
 
 .PHONY: list check clean install build_all all cyclo
 
@@ -45,6 +40,15 @@ glide:
 	# Run glide up if want to update via glide.yaml
 	glide install
 
+version:
+	rm -rf ${VERSION_FILE}
+	@echo "package inspectdata" > $(VERSIONFILE)
+	@echo "// Identify the version of the release" >> $(VERSIONFILE)
+	@echo "const (" >> $(VERSIONFILE)
+	@echo "  Version = \"${VERSION}\" // Release: Major.Minor.Hotfix, ex: 1.0.1" >> $(VERSIONFILE)
+	@echo "  Build = \"${BUILD}\" // Build release dientification, ex: Git Commit Hash SHA1" >> $(VERSIONFILE)
+	@echo ")" >> $(VERSIONFILE)
+
 vet:
 	go vet ${PKG}
 
@@ -59,10 +63,10 @@ lint:
 format:
 	go fmt ${PKG}
 
-build: glide stringer format vet
-	go build -o ${BIN_DIR}/${LIB} ${LDFLAGS} ${PKG}
+build: glide version stringer format vet
+	go build -o ${BIN_DIR}/${LIB} ${PKG}
 
-build_all: glide stringer format vet
+build_all: glide version stringer format vet
 	$(foreach GOOS, $(PLATFORMS),\
 	$(foreach GOARCH, $(ARCHITECTURES), $(shell export GOOS=$(GOOS); export GOARCH=$(GOARCH); go build -v -o $(BIN_DIR)/$(LIB)-$(GOOS)-$(GOARCH) $(LDFLAGS) $(PKG))))
 
@@ -71,7 +75,7 @@ stringer:
 	stringer -type=CanonicalType
 
 #test: build cyclo
-test: build 
+test: build
 	# tests and code coverage
 	mkdir -p $(COVERAGE_DIR)
 	go test ${GOLIST} -short -v ${LDFLAGS_TEST} -coverprofile ${COV_PROFILE}
@@ -87,17 +91,17 @@ ifeq ($(cyclo_results),)
 	@# ignore no results
 else
 	printf ${cyclo_results}
-endif 
+endif
 
-misspell: 
+misspell:
 	go get github.com/client9/misspell/cmd/misspell
 	misspell .
 
-docs: 
+docs:
 	go get golang.org/x/tools/cmd/godoc
 	open http://localhost:6060/pkg/${PKG}/
 	godoc -http=":6060"
-	
+
 install:
 	go install ${PKG}
 

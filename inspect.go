@@ -8,12 +8,6 @@ import (
 	"strings"
 )
 
-// Identify the version of the release
-var (
-	Version string // Release: Major.Minor.HotFix, ex: 1.0.1
-	Build   string // Build release identification, date timestamp
-)
-
 // Denotes the canonical type for a given piece of string data ex: IP address, email, or UUID
 type CanonicalType int
 
