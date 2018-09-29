@@ -418,6 +418,92 @@ func TestInspectString(t *testing.T) {
 	}
 }
 
+func TestUniqueCharCount(t *testing.T) {
+	str := "hellow world"
+	charMap := uniqueCharCount(str)
+	if len(charMap) != 8 {
+		t.Errorf("uniqueCharCOunt should have detected map len of 8, but got %v", len(charMap))
+	}
+	if charMap["r"] != 1 {
+		t.Errorf("uniqueCharCOunt unexpected character count for key 'r'")
+	}
+	if charMap["w"] != 2 {
+		t.Errorf("uniqueCharCOunt unexpected character count for key 'w'")
+	}
+	if charMap["l"] != 3 {
+		t.Errorf("uniqueCharCOunt unexpected character count for key 'l'")
+	}
+}
+
+func TestCalcFrequency(t *testing.T) {
+	str := "hellow world"
+	//freq := [8]float64{0.08333333333333333, 0.08333333333333333, 0.08333333333333333, 0.08333333333333333, 0.08333333333333333, 0.25, 0.16666666666666666, 0.16666666666666666}
+	freq2 := calcFrequency(str)
+
+	if len(freq2) != 8 {
+		t.Errorf("calcFrequency should have detected map len of 8, but got %v", len(freq2))
+	}
+	/*
+		    TODO fix later on literal match
+			fmt.Printf("Freq %v", freq)
+			fmt.Printf("Freq2 %v", freq)
+			for i := range freq2 {
+				if freq[i] != freq2[i] {
+					t.Errorf("calcFrequency arrays index mismatch on what was expected")
+				}
+			}
+	*/
+}
+
+func TestShannonEntropy(t *testing.T) {
+	str := "hello world"
+	e := ShannonEntropy(str)
+	if e != float64(2.845) {
+		t.Errorf("entropy failed on %v resulted %v", str, e)
+	}
+
+	str = "ABCDE"
+	e = ShannonEntropy(str)
+	if e != float64(2.322) {
+		t.Errorf("entropy failed on %v resulted %v", str, e)
+	}
+
+	str = "I like cats"
+	e = ShannonEntropy(str)
+	if e != float64(3.278) {
+		t.Errorf("entropy failed on %v resulted %v", str, e)
+	}
+
+	str = "the quick lazy fox jumped over the brown dog"
+	e = ShannonEntropy(str)
+	if e != float64(4.323) {
+		t.Errorf("entropy failed on %v resulted %v", str, e)
+	}
+
+	str = "X0UvAhM*CV$9*t3"
+	e = ShannonEntropy(str)
+	//fmt.Printf("Str %v has Entroy %v\n", str, e)
+	if e != float64(3.774) {
+		t.Errorf("entropy failed on %v resulted %v", str, e)
+	}
+}
+
+func TestMetricEntropy(t *testing.T) {
+	str := "X0UvAhM*CV$9*t3"
+	e := MetricEntropy(str)
+	//fmt.Printf("Str %v has Metric Entroy %v\n", str, e)
+	if e != float64(0.252) {
+		t.Errorf("entropy failed on %v resulted %v", str, e)
+	}
+
+	str = "hot pants in warm land!"
+	e = MetricEntropy(str)
+	//fmt.Printf("Str %v has Metric Entroy %v\n", str, e)
+	if e != float64(0.160) {
+		t.Errorf("entropy failed on %v resulted %v", str, e)
+	}
+}
+
 func TestInspect(t *testing.T) {
 	input := "My string"
 	datum, err := Inspect(input)

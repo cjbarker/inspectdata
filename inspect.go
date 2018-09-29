@@ -11,6 +11,9 @@ import (
 	"strings"
 )
 
+// Decimal point precision for calculating entropy
+var PrecEntropy = float64(1000)
+
 // Denotes the canonical type for a given piece of string data ex: IP address, email, or UUID
 type CanonicalType int
 
@@ -228,27 +231,33 @@ func inspectString(v string) (CanonicalType, error) {
 	}
 }
 
-// Counts frequency of occurrence of a unique character for a given string.
+// Counts frequency of occurrence of a unique character for a given string generating
+// a map of key character and frequency count of occurrence.
 func uniqueCharCount(str string) map[string]int {
 	var char string
-	//var cnt int
 	charMap := make(map[string]int)
 	for _, r := range str {
 		char = string(r)
-		//cnt = charMap[char]
 		charMap[char] += 1
 	}
 	return charMap
 }
 
-// Calculates the string's associated character frequency of occurence.
+// Calculates the string's associated character frequency of occurence (distance).
 func calcFrequency(str string) []float64 {
 	strLen := len([]rune(str))
 	charMap := uniqueCharCount(str)
+	// store keys in slice in sorted order
+	var keys []string
+	for k := range charMap {
+		keys = append(keys, k)
+	}
 	freq := make([]float64, len(charMap))
 	idx := 0
+	x := float64(0)
 	for _, val := range charMap {
-		freq[idx] = float64(val) / float64(strLen)
+		x = float64(val) / float64(strLen)
+		freq[idx] = x
 		idx++
 	}
 	return freq
@@ -256,16 +265,26 @@ func calcFrequency(str string) []float64 {
 
 // Calculates the Shannon Entropy of a given string of alphanumeric characters.
 // Entropy returned is measured from 0 to 1 (closer to 1 the higher probability of entropy)
-func Entropy(str string) float64 {
+func ShannonEntropy(str string) float64 {
 	if str == "" {
 		return 0
 	}
 	freq := calcFrequency(str)
+	//fmt.Printf("Freq %v ", freq)
 	var entropy float64
 	for _, v := range freq {
-		if v != 0 { // Entropy needs 0 * log(0) == 0
-			entropy -= v * math.Log(v)
+		if v > 0 { // Entropy needs 0 * log(0) == 0
+			entropy += v * math.Log2(v)
 		}
 	}
-	return entropy
+	entropy *= -1
+	return math.Round(entropy*PrecEntropy) / PrecEntropy
+}
+
+// Metric Entropy is the Shannon Entropy divided by the string length.
+// Returns values from 0 to 1, where 1 means equally distributed random string.
+func MetricEntropy(str string) float64 {
+	sEntropy := ShannonEntropy(str)
+	entropy := sEntropy / float64(len(str))
+	return math.Round(entropy*PrecEntropy) / PrecEntropy
 }
