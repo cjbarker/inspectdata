@@ -1,9 +1,12 @@
-// Package provides conceptual (canonical) identification of unknown data including Personally Identifiable Information (PII) and Payment Card Industry (PCI).
+// Package inspectdata provides conceptual (canonical) identification
+// of unknown data including Personally Identifiable Information (PII)
+// and Payment Card Industry (PCI).
 package inspectdata
 
 import (
 	"errors"
 	"fmt"
+	"math"
 	"regexp"
 	"strings"
 )
@@ -223,4 +226,46 @@ func inspectString(v string) (CanonicalType, error) {
 	} else {
 		return Unknown, errors.New("Unable to determine canonical data - unknown")
 	}
+}
+
+// Counts frequency of occurrence of a unique character for a given string.
+func uniqueCharCount(str string) map[string]int {
+	var char string
+	//var cnt int
+	charMap := make(map[string]int)
+	for _, r := range str {
+		char = string(r)
+		//cnt = charMap[char]
+		charMap[char] += 1
+	}
+	return charMap
+}
+
+// Calculates the string's associated character frequency of occurence.
+func calcFrequency(str string) []float64 {
+	strLen := len([]rune(str))
+	charMap := uniqueCharCount(str)
+	freq := make([]float64, len(charMap))
+	idx := 0
+	for _, val := range charMap {
+		freq[idx] = float64(val) / float64(strLen)
+		idx++
+	}
+	return freq
+}
+
+// Calculates the Shannon Entropy of a given string of alphanumeric characters.
+// Entropy returned is measured from 0 to 1 (closer to 1 the higher probability of entropy)
+func Entropy(str string) float64 {
+	if str == "" {
+		return 0
+	}
+	freq := calcFrequency(str)
+	var entropy float64
+	for _, v := range freq {
+		if v != 0 { // Entropy needs 0 * log(0) == 0
+			entropy -= v * math.Log(v)
+		}
+	}
+	return entropy
 }
