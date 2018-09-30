@@ -554,4 +554,40 @@ func TestInspect(t *testing.T) {
 	if datum.IsPCI {
 		t.Errorf("CCYYMMDD data should not be denoted as PCI")
 	}
+
+	// test entropy
+	input = "}++zZYMUptu`IIpeoQ-n"
+	datum, err = Inspect(input)
+	if err != nil {
+		t.Errorf(err.Error())
+	}
+	if datum.Canonical != Secret {
+		t.Errorf("Unexpected canonical type %v for %s", datum.Canonical, input)
+	}
+	if datum.Entropy <= 0 {
+		t.Errorf("Metric entropy should be greater than 0 for %s", input)
+	}
+	input = "pancake horse head coach monkey"
+	datum, err = Inspect(input)
+	if err == nil {
+		t.Errorf("Should have errored as unkonwn string")
+	}
+	if datum.Canonical != Unknown {
+		t.Errorf("Unexpected canonical type %v for %s", datum.Canonical, input)
+	}
+	if datum.Entropy != 0 {
+		t.Errorf("Metric entropy should be greater than 0 for %s", input)
+	}
+	input = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+	datum, err = Inspect(input)
+	if err == nil {
+		t.Errorf("Should have errored as unkonwn string")
+	}
+	if datum.Canonical != Unknown {
+		t.Errorf("Unexpected canonical type %v for %s", datum.Canonical, input)
+	}
+	if datum.Entropy != 0 {
+		t.Errorf("Metric entropy should be greater than 0 for %s", input)
+	}
+
 }

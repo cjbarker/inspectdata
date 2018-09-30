@@ -4,9 +4,9 @@ package inspectdata
 
 import "strconv"
 
-const _CanonicalType_name = "UnknownUUIDv4IPv4IPv6EmailCountryCode2CountryCode3LanguageCode2LanguageCode3USPostalCodeSSNUSDLatLongDateCCYYMMDDPANAmexPANVisaPANMCPANDiscoverPANDinersPANJCB"
+const _CanonicalType_name = "UnknownUUIDv4IPv4IPv6EmailCountryCode2CountryCode3LanguageCode2LanguageCode3USPostalCodeSSNUSDLatLongDateCCYYMMDDPANAmexPANVisaPANMCPANDiscoverPANDinersPANJCBSecret"
 
-var _CanonicalType_index = [...]uint8{0, 7, 13, 17, 21, 26, 38, 50, 63, 76, 88, 91, 94, 101, 113, 120, 127, 132, 143, 152, 158}
+var _CanonicalType_index = [...]uint8{0, 7, 13, 17, 21, 26, 38, 50, 63, 76, 88, 91, 94, 101, 113, 120, 127, 132, 143, 152, 158, 164}
 
 func (i CanonicalType) String() string {
 	if i < 0 || i >= CanonicalType(len(_CanonicalType_index)-1) {

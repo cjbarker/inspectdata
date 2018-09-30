@@ -14,6 +14,9 @@ import (
 // Decimal point precision for calculating entropy
 var PrecEntropy = float64(1000)
 
+// Denotes any string that >= to this has high entropy
+var HighEntropy = float64(0.20)
+
 // Denotes the canonical type for a given piece of string data ex: IP address, email, or UUID
 type CanonicalType int
 
@@ -39,6 +42,7 @@ const (
 	PANDiscover                 // Payment|Primary Card Number aka credit card number Discover
 	PANDiners                   // Payment|Primary Card Number aka credit card number Diner's Club
 	PANJCB                      // Payment|Primary Card Number aka credit card number JCB
+	Secret                      // Indicates may be sensitive/secret data such as password or access token due to high entropy
 )
 
 // Canonical structure representing a given piece of data aka the datum.
@@ -49,6 +53,7 @@ type Datum struct {
 	Canonical CanonicalType // Canonical inspected data type identified from inspectio ex: UUIDv4, IPv4, SSN, etc.
 	IsPII     bool          // Denotes if considered Personally Identifiable Information (ex: email addr)
 	IsPCI     bool          // Denotes if considered Payment Card Industry data (ex: credit card no.)
+	Entropy   float64       // Metric entropy score 0 to 1 based off Shannon Entropy only if string length >= 20 and > HighEntropy
 }
 
 // Regular Expressions for Data Type Inspection
@@ -118,6 +123,8 @@ func Inspect(v interface{}) (datum Datum, err error) {
 		datum.IsPII = true
 	case PANAmex, PANMC, PANVisa, PANDiscover, PANDiners, PANJCB:
 		datum.IsPCI = true
+	case Secret:
+		datum.Entropy = MetricEntropy(str)
 	default:
 		datum.IsPCI = false
 		datum.IsPII = false
@@ -227,6 +234,12 @@ func inspectString(v string) (CanonicalType, error) {
 	} else if validPANDiscover.MatchString(v) {
 		return PANDiscover, nil
 	} else {
+		// check for entropy on unknown string
+		// could potentially be secret like password or access token
+		//fmt.Printf("Str %s Entropy %v", v, MetricEntropy(v))
+		if len(v) >= 20 && MetricEntropy(v) >= float64(HighEntropy) {
+			return Secret, nil
+		}
 		return Unknown, errors.New("Unable to determine canonical data - unknown")
 	}
 }
